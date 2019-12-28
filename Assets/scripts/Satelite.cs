@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Satelite : MonoBehaviour {
 
@@ -16,10 +17,13 @@ public class Satelite : MonoBehaviour {
     private bool _onPlanet = true;
     private float _speed = 2f;
     private CircleCollider2D _planetCollider;
+    private CameraController _cameraController;
 
     void Start() {
         _sateliteTransform = (RectTransform) transform;
+        _cameraController = Camera.main.gameObject.GetComponent<CameraController>();
         setPlanet(Planet);
+        print(Camera.main.name);
     }
 
     void Update() {
@@ -50,22 +54,17 @@ public class Satelite : MonoBehaviour {
         double radiunCollision = Math.Sqrt(Math.Pow(_sateliteTransform.position.x - _planetTransform.position.x, 2) +
                                            Math.Pow(_sateliteTransform.position.y - _planetTransform.position.y, 2));
         double horda = Math.Sqrt(Math.Pow(_sateliteTransform.position.x - (_planetTransform.position.x + radiunCollision),2)  + Math.Pow(_sateliteTransform.position.y - _planetTransform.position.y ,2));
-//        print("horda " +horda + " _flightAltitude "+ _flightAltitude);
-//        print("horda / (2 * _flightAltitude) " +horda / (2 * _flightAltitude));
-        double x = 2 * Math.Asin(horda / (2 * radiunCollision));
+        double radians = 2 * Math.Asin(horda / (2 * radiunCollision));
         double offset = _sateliteTransform.position.y < _planetTransform.position.y
             ? (_sateliteTransform.position.x < _planetTransform.position.x ? Math.PI/2 : -Math.PI/2)
-            : 0; 
-        print("угол " +x * 180 /Math.PI + " offset " + offset);
-        _angleRadian = (float) (x + offset);
-//        print("угол " +_angleRadian);
+            : 0; // в 3 четверти вычесть 90 градусов, в 4 четверти прибавить 90 градусов
+        print("угол " +radians * 180 /Math.PI + " offset " + offset);
+        _angleRadian = (float) (radians + offset);
+        _cameraController.go(planet.gameObject);
     }
 
     void OnTriggerEnter2D(Collider2D collision) {
-        print("коллизии1" + collision);
-
         Planet planet = collision.gameObject.GetComponent<Planet>();
-        print("коллизии1 pl" + planet);
 
         if (planet != null) {
             setPlanet(planet);
