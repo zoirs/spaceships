@@ -11,7 +11,7 @@ public class Test : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.position = Vector2.MoveTowards(transform.position, transform.position + Vector3.down * Time.deltaTime * 0.5f,0.5f);
+//		transform.position = Vector2.MoveTowards(transform.position, transform.position + Vector3.down * Time.deltaTime * 0.5f,0.5f);
 
 	}
 	
