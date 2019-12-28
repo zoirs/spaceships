@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class Satelite : MonoBehaviour {
 
@@ -12,18 +13,25 @@ public class Satelite : MonoBehaviour {
     //Высота полета
     private float _flightAltitude;
     //Направление движение от платеты
-    private Vector3 _flightDirection;
+    private Vector3 _flightDirection = Vector3.right;
 
-    private bool _onPlanet = true;
+    private bool _onPlanet = false;
     private float _speed = 2f;
     private CircleCollider2D _planetCollider;
     private CameraController _cameraController;
+    
+    
+    //todo вынести в сервис
+    public GameObject PlanetPrefab;
+    private float _heightScreen;
+    private float _widthScreen;
 
     void Start() {
         _sateliteTransform = (RectTransform) transform;
         _cameraController = Camera.main.gameObject.GetComponent<CameraController>();
-        setPlanet(Planet);
-        print(Camera.main.name);
+        
+        _heightScreen = Camera.main.orthographicSize * 2.0f;
+        _widthScreen = _heightScreen * Screen.width / Screen.height;
     }
 
     void Update() {
@@ -58,9 +66,17 @@ public class Satelite : MonoBehaviour {
         double offset = _sateliteTransform.position.y < _planetTransform.position.y
             ? (_sateliteTransform.position.x < _planetTransform.position.x ? Math.PI/2 : -Math.PI/2)
             : 0; // в 3 четверти вычесть 90 градусов, в 4 четверти прибавить 90 градусов
-        print("угол " +radians * 180 /Math.PI + " offset " + offset);
+
         _angleRadian = (float) (radians + offset);
         _cameraController.go(planet.gameObject);
+
+        Vector3 position = planet.transform.position + 
+                           new Vector3(Random.Range(-_widthScreen/2 +_planetCollider.radius*1.3f, _widthScreen/2-_planetCollider.radius*1.3f), 
+                               Random.Range( _heightScreen / 2 , _heightScreen - _planetCollider.radius*2.3f), 0);
+        
+        GameObject nextPlanet = Instantiate(PlanetPrefab);
+        RectTransform rectTransform = nextPlanet.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = position;
     }
 
     void OnTriggerEnter2D(Collider2D collision) {
