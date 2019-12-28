@@ -1,4 +1,5 @@
 ﻿using System;
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -16,7 +17,7 @@ public class Satelite : MonoBehaviour {
     private Vector3 _flightDirection = Vector3.right;
 
     private bool _onPlanet = false;
-    private float _speed = 2f;
+    public float Speed = 2.5f;
     private CircleCollider2D _planetCollider;
     private CameraController _cameraController;
     
@@ -30,20 +31,20 @@ public class Satelite : MonoBehaviour {
         _sateliteTransform = (RectTransform) transform;
         _cameraController = Camera.main.gameObject.GetComponent<CameraController>();
         
-        _heightScreen = Camera.main.orthographicSize * 2.0f;
+        _heightScreen = 2.0f * Constants.cameraPozitionZ * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
         _widthScreen = _heightScreen * Screen.width / Screen.height;
     }
 
     void Update() {
         if (_onPlanet) {
-            _angleRadian += Time.deltaTime * _speed;
+            _angleRadian += Time.deltaTime * Speed;
             Vector3 rotation = new Vector3((float) Math.Cos(_angleRadian) * _flightAltitude, (float) Math.Sin(_angleRadian) * _flightAltitude);
             Vector3 nextPosition = Planet.transform.position + rotation;
 
             transform.SetPositionAndRotation(Vector2.MoveTowards(transform.position, nextPosition, 20f),
                 Quaternion.AngleAxis((float) (_angleRadian * 180 / Math.PI - 90), Vector3.forward));
         } else {
-            float step = _speed * Time.deltaTime;
+            float step = Speed * 1.5f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, transform.position + _flightDirection * 10f, step);
         }
 
