@@ -88,7 +88,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Planet: {fileID: 0}
   Speed: 2
-  PlanetPrefab: {fileID: 0}
+  PlanetPrefabs:
+  - {fileID: 1145953127111992, guid: 82a3f079a379c124aa6ff973bf5b12a3, type: 2}
+  - {fileID: 1650701495012252, guid: 01735f95eddc3004bb01de460c57660a, type: 2}
+  - {fileID: 1037239538620678, guid: 19fddc803e2e5ed40ac92a4dbea59625, type: 2}
+  - {fileID: 1640316948441002, guid: eec2ec21a8eb10047bf045d525554c22, type: 2}
 --- !u!212 &212740569685839996
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,9 +23,8 @@ public class Satelite : MonoBehaviour {
     private CircleCollider2D _planetCollider;
     private CameraController _cameraController;
     
-    
     //todo вынести в сервис
-    public GameObject PlanetPrefab;
+    public List<GameObject> PlanetPrefabs;
     private float _heightScreen;
     private float _widthScreen;
 
@@ -47,7 +48,17 @@ public class Satelite : MonoBehaviour {
             float step = Speed * 1.5f * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, transform.position + _flightDirection * 10f, step);
         }
+        
+        if (Input.touchCount > 0)
+        {
+            Touch theTouch = Input.GetTouch(0);
 
+            if (theTouch.phase == TouchPhase.Began)
+            {
+                _onPlanet = false;
+                _flightDirection = _sateliteTransform.position - _planetTransform.position;            }
+        }
+        
         if (Input.GetKeyDown(KeyCode.Space)) {
             _onPlanet = false;
             _flightDirection = _sateliteTransform.position - _planetTransform.position;
@@ -58,7 +69,7 @@ public class Satelite : MonoBehaviour {
         Planet = planet;
         _planetTransform = (RectTransform) planet.transform;
         _planetCollider = planet.GetComponent<CircleCollider2D>();
-        _flightAltitude = _sateliteTransform.rect.width / 2 + _planetCollider.radius;
+        _flightAltitude = _sateliteTransform.rect.width + _planetCollider.radius;
         _onPlanet = true;
         double radiunCollision = Math.Sqrt(Math.Pow(_sateliteTransform.position.x - _planetTransform.position.x, 2) +
                                            Math.Pow(_sateliteTransform.position.y - _planetTransform.position.y, 2));
@@ -75,7 +86,8 @@ public class Satelite : MonoBehaviour {
                            new Vector3(Random.Range(-_widthScreen/2 +_planetCollider.radius*1.3f, _widthScreen/2-_planetCollider.radius*1.3f), 
                                Random.Range( _heightScreen / 2 , _heightScreen - _planetCollider.radius*2.3f), 0);
         
-        GameObject nextPlanet = Instantiate(PlanetPrefab);
+        GameObject nextPlanet = Instantiate(PlanetPrefabs[Random.Range(0, PlanetPrefabs.Count-1)]);
+            
         RectTransform rectTransform = nextPlanet.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = position;
     }
@@ -87,4 +99,24 @@ public class Satelite : MonoBehaviour {
             setPlanet(planet);
         }
     }
+
+    private void OnBecameInvisible() {
+        ReloadLevel();
+//        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+    }
+    
+    public bool gameOver = false;
+ 
+    public void ReloadLevel()
+    {
+        gameOver = true;    
+        StartCoroutine(RestarCurrentLevel());
+    }
+ 
+    IEnumerator RestarCurrentLevel()
+    {
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
 }
