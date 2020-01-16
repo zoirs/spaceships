@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BackgroundController : MonoBehaviour {
 
-	private static float delta = 29.8f;
+	private static float delta = 10.86f;
 //	private float speed;
 	public Transform cam;
 
