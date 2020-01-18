@@ -2,7 +2,7 @@
 
 public class BackgroundController : MonoBehaviour {
 
-	private static float delta = 10.86f;
+	private static float delta = 10.8f;
 //	private float speed;
 	public Transform cam;
 

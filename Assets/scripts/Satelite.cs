@@ -19,7 +19,7 @@ public class Satelite : MonoBehaviour {
     private Vector3 _flightDirection = Vector3.right;
 
     private bool _onPlanet = false;
-    private float Speed = 0.51f;
+    private float Speed = 3.1f;
     private CircleCollider2D _planetCollider;
     private CameraController _cameraController;
 
@@ -34,6 +34,7 @@ public class Satelite : MonoBehaviour {
 
         _heightScreen = 2.0f * Constants.cameraPozitionZ * Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad);
         _widthScreen = _heightScreen * Screen.width / Screen.height;
+        _tail = gameObject.GetComponentInChildren<ParticleSystem>();
     }
 
     void Update() {
@@ -58,12 +59,14 @@ public class Satelite : MonoBehaviour {
             if (theTouch.phase == TouchPhase.Began) {
                 _onPlanet = false;
                 _flightDirection = _sateliteTransform.position - _planetTransform.position;
+                _tail.gameObject.SetActive(true); 
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
             _onPlanet = false;
             _flightDirection = _sateliteTransform.position - _planetTransform.position;
+            _tail.gameObject.SetActive(true); 
         }
     }
 
@@ -102,6 +105,7 @@ public class Satelite : MonoBehaviour {
 
         if (planet != null) {
             setPlanet(planet, closestPoint);
+            _tail.gameObject.SetActive(false); 
         }
     }
 
@@ -111,6 +115,7 @@ public class Satelite : MonoBehaviour {
     }
 
     public bool gameOver = false;
+    private ParticleSystem _tail;
 
     public void ReloadLevel() {
         gameOver = true;
